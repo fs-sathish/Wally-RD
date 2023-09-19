@@ -194,10 +194,9 @@ async function areColorsInSameGroup(color1, color2, tolerance = 1) {
 
     const similarityThreshold = 10;
 
-    console.log(deltaE)
     const areColorsSimilar = deltaE <= similarityThreshold;
 
-    console.log(`Color difference (Delta E): ${deltaE}`);
+    console.log(`Color difference (Delta E): ${deltaE.toFixed(2)}`);
     console.log(`Are the colors similar? ${areColorsSimilar}`);
 }
 
@@ -241,7 +240,7 @@ async function main() {
         // const s3Url = 'https://wallyassets.s3.us-east-2.amazonaws.com/element_images/62c5d701-3000-45d3-a06b-851cc05e8147/0ed51077b6d47a0ccd27f1b261d92905.png';
         // fileName = await downloadImageFromS3(s3Url);
         //######################
-        fileName = 'test_img2.png' // use local directory file
+        fileName = 'test_org.png' // use local directory file
         //#######################
         const imageInfo = await analyzeImage(fileName);
         console.log('Original Image Text Color:', imageInfo.textInfo.textColor);
@@ -254,10 +253,10 @@ async function main() {
         const finalFGAdjustedColor = await increaseFGContrastToDesiredRatio(backgroundColor, textColor, desiredRatio);
         const is_fg_suggestion = finalFGAdjustedColor == textColor ? true: false;
         if(!is_fg_suggestion){
-            // const val = await areColorsInSameGroup(backgroundColor, finalFGAdjustedColor);
             console.log("-------------------------------------")
             console.log('Suggested Text Color:', finalFGAdjustedColor);
-            const val = await compareColors(textColor, finalFGAdjustedColor, threshold);
+            const val = await areColorsInSameGroup(textColor, finalFGAdjustedColor);
+            // const val = await compareColors(textColor, finalFGAdjustedColor, threshold);
             if(val){
                 console.log('Suggested Text color is from same color group!');
             }
@@ -269,8 +268,8 @@ async function main() {
                     backgroundColor, textColor, desiredRatio);
                     const is_bg_suggestion = finalBGAdjustedColor == backgroundColor ? true: false;
                     if(!is_bg_suggestion){
-                        // const val = await areColorsInSameGroup(backgroundColor, finalFGAdjustedColor);
-                        const val = await compareColors(backgroundColor, finalBGAdjustedColor, threshold);
+                        const val = await areColorsInSameGroup(backgroundColor, finalBGAdjustedColor);
+                        // const val = await compareColors(backgroundColor, finalBGAdjustedColor, threshold);
                         console.log('Suggested BackGround Color:', finalBGAdjustedColor);
                         if(val){
                             console.log('Suggested BackGround color is from same color group!');
